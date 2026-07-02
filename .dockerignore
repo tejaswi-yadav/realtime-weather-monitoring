@@ -1,0 +1,74 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README.md
+LICENSE
+
+# Docker files
+docker-compose.yml
+Dockerfile.backup
+.dockerignore
+
+# Environment files
+.env
+.env.*
+*.env
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+weather-app
+weather-consumer
+weather-evaluator
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test files
+*_test.go
+test/
+tests/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Data directories
+prometheus_data/
+alertmanager_data/
+grafana_data/
+
+# Grafana files
+grafana/
+
+# Config files
+prometheus.yml
+alertmanager.yml
+alert_rules.yml
+
+# Scripts
+*.sh
+*.ps1
+
+# Backups
+*.backup
+*.bak

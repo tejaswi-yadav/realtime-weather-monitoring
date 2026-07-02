@@ -1,0 +1,110 @@
+groups:
+  - name: weather_alerts
+    rules:
+      # High temperature alert (lowered threshold for testing)
+      - alert: HighTemperature
+        expr: weather_temperature_celsius > 10
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High temperature detected"
+          description: "Temperature is {{ $value }}°C in {{ $labels.city }} ({{ $labels.zip_code }}) on {{ $labels.datetime }}"
+
+      # Low temperature alert
+      - alert: LowTemperature
+        expr: weather_temperature_celsius < 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low temperature detected"
+          description: "Temperature is {{ $value }}°C in {{ $labels.city }} ({{ $labels.zip_code }}) on {{ $labels.datetime }}"
+
+      # High humidity alert (lowered threshold for testing)
+      - alert: HighHumidity
+        expr: weather_humidity_percent > 60
+        for: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "High humidity detected"
+          description: "Humidity is {{ $value }}% in {{ $labels.city }} ({{ $labels.zip_code }}) on {{ $labels.datetime }}"
+
+      # Low humidity alert
+      - alert: LowHumidity
+        expr: weather_humidity_percent < 20
+        for: 2m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low humidity detected"
+          description: "Humidity is {{ $value }}% in {{ $labels.city }} ({{ $labels.zip_code }}) on {{ $labels.datetime }}"
+
+      # High wind speed alert
+      - alert: HighWindSpeed
+        expr: weather_wind_speed_ms > 15
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High wind speed detected"
+          description: "Wind speed is {{ $value }} m/s in {{ $labels.city }} ({{ $labels.zip_code }}) on {{ $labels.datetime }}"
+
+      # High pressure alert
+      - alert: HighPressure
+        expr: weather_pressure_hpa > 1050
+        for: 2m
+        labels:
+          severity: info
+        annotations:
+          summary: "High pressure detected"
+          description: "Pressure is {{ $value }} hPa in {{ $labels.city }} ({{ $labels.zip_code }}) on {{ $labels.datetime }}"
+
+      # Low pressure alert
+      - alert: LowPressure
+        expr: weather_pressure_hpa < 980
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low pressure detected"
+          description: "Pressure is {{ $value }} hPa in {{ $labels.city }} ({{ $labels.zip_code }}) on {{ $labels.datetime }}"
+
+      # Weather condition alerts
+      - alert: RainyWeather
+        expr: weather_condition_code == 3
+        for: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "Rainy weather detected"
+          description: "Rainy conditions in {{ $labels.city }} ({{ $labels.zip_code }}) on {{ $labels.datetime }}"
+
+      - alert: SnowyWeather
+        expr: weather_condition_code == 4
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Snowy weather detected"
+          description: "Snowy conditions in {{ $labels.city }} ({{ $labels.zip_code }}) on {{ $labels.datetime }}"
+
+      # Service health alerts
+      - alert: WeatherConsumerDown
+        expr: up{job="weather-consumer"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Weather consumer is down"
+          description: "Weather consumer service is not responding"
+
+      - alert: HighMessageProcessingErrors
+        expr: rate(weather_message_errors_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High message processing error rate"
+          description: "Error rate is {{ $value }} errors per second"

@@ -1,0 +1,55 @@
+# Build stage
+FROM golang:1.23-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy go mod files
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY main.go consumer.go evaluator.go ./
+
+# Build all applications
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o weather-app main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o weather-consumer consumer.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o weather-evaluator evaluator.go
+
+# Final stage - minimal image
+FROM alpine:latest
+
+# Install ca-certificates for HTTPS requests
+RUN apk --no-cache add ca-certificates
+
+# Create non-root user
+RUN adduser -D -s /bin/sh appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy binaries from builder stage
+COPY --from=builder /app/weather-app .
+COPY --from=builder /app/weather-consumer .
+COPY --from=builder /app/weather-evaluator .
+
+# Change ownership to appuser
+RUN chown appuser:appuser weather-app weather-consumer weather-evaluator
+
+# Switch to non-root user
+USER appuser
+
+# Expose port (if needed for health checks)
+EXPOSE 8080
+
+# Run the application
+CMD ["./weather-app"]
+
+
+
+
+
+
+

@@ -1,0 +1,85 @@
+{
+  "title": "Weather Pressure Monitoring",
+  "description": "Real-time atmospheric pressure monitoring across different cities",
+  "tags": ["weather", "pressure"],
+  "timezone": "browser",
+  "schemaVersion": 16,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Pressure by City",
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "targets": [
+        {
+          "expr": "weather_pressure_hpa",
+          "legendFormat": "{{city}} ({{zip_code}}) - {{datetime}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pressurehpa",
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "drawStyle": "line"
+          }
+        }
+      },
+      "options": {
+        "legend": {"displayMode": "table", "placement": "bottom"}
+      }
+    },
+    {
+      "id": 2,
+      "title": "Current Pressure",
+      "type": "stat",
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "targets": [
+        {
+          "expr": "weather_pressure_hpa",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pressurehpa",
+          "thresholds": {
+            "steps": [
+              {"value": null, "color": "blue"},
+              {"value": 980, "color": "yellow"},
+              {"value": 1050, "color": "red"}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Active Pressure Alerts",
+      "type": "table",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "targets": [
+        {
+          "expr": "ALERTS{alertname=~\"HighPressure|LowPressure\",alertstate=\"firing\"}",
+          "format": "table",
+          "refId": "A",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "displayMode": "list"
+          }
+        }
+      }
+    }
+  ]
+}
+
